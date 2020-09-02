@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
@@ -23,11 +24,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private Context context;
 
 
-
     public MovieAdapter(List _listMovie, Context _context) {
         listMovie = _listMovie;
         context = _context;
-        Log.d(TAG, "MovieAdapter: " + _listMovie);
+    }
+
+    public MovieAdapter(Context _context) {
+        listMovie = new ArrayList<>();
+        context = _context;
+    }
+
+    public void setListMovie(List<Movie> listMovie) {
+        this.listMovie = listMovie;
     }
 
     @NonNull

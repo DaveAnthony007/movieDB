@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    public static List<Movie> listMovie;
+    public List<Movie> listMovie;
     private ApiHandler apiHandler;
 
     @Override
@@ -40,38 +40,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
-
         listMovie = new ArrayList<>();
         apiHandler = new ApiHandler(this);
 
-        // dummy
-        for (int i = 0; i < 20; i++) {
-            Movie newMovie = new Movie();
-            newMovie.setTitle("Movie " + i);
-            listMovie.add(newMovie);
-        }
-
-//        apiHandler.getPopularMovie();
-//        Log.d(TAG, "onCreate: " + apiHandler.temp);
-//        for (Movie m :
-//                apiHandler.temp) {
-//            Log.d(TAG, "onCreate: " + m.getTitle());
-//        }
-//        listMovie = apiHandler.temp;
-
-//        Log.d(TAG, "onCreate: " + apiHandler.res);
+        adapter = new MovieAdapter(this);
+        recyclerView.setAdapter(adapter);
 
         something();
-//        adapter.notifyDataSetChanged();
-        Log.d(TAG, "onCreate: " + listMovie);
-
-//        adapter = new MovieAdapter(this.listMovie, this);
-//        recyclerView.setAdapter(adapter);
-
-
-
-
     }
 
     private void something() {
@@ -83,10 +58,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, "onResponse: Requesting");
-
-                        adapter = new MovieAdapter(jsonParseToMovie(response), getApplicationContext());
-
-                        recyclerView.setAdapter(adapter);
+                        jsonParseToMovie(response);
+                        ((MovieAdapter) adapter).setListMovie(listMovie);
+                        adapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
@@ -122,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "jsonParseToMovie: Parsing error");
         }
 
-        Helper.listMovie = listMovie;
+        this.listMovie = listMovie;
         for (Movie m :
                 listMovie) {
             Log.d(TAG, "jsonParseToMovie: " + m.getTitle());

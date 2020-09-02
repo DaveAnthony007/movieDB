@@ -3,6 +3,8 @@ package com.example.moviedb;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -34,8 +36,7 @@ public class ApiHandler {
         return url;
     }
 
-    public List<Movie> temp = new ArrayList<>();
-    public void getPopularMovie() {
+    public void getPopularMovie(final RecyclerView.Adapter adapter) {
         Log.d(TAG, "getPopularMovie: Fetch data");
         String url = "https://api.themoviedb.org/3/discover/movie?api_key=6ad6a1d90315687aae2dd166fb5491b2&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1";
         
@@ -44,7 +45,8 @@ public class ApiHandler {
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, "onResponse: Requesting");
-                        jsonParseToMovie(response);
+                        ((MovieAdapter) adapter).setListMovie(jsonParseToMovie(response));
+                        adapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
@@ -54,12 +56,6 @@ public class ApiHandler {
                     }
                 });
         requestQueue.add(stringRequest);
-//        Log.d(TAG, "getPopularMovie: " + temp);
-//        for (Movie m :
-//                temp) {
-//            Log.d(TAG, "getPopularMovie: " + m.getTitle());
-//        }
-//        return temp;
     }
 
     public List<Movie> jsonParseToMovie(String response) {
@@ -87,11 +83,6 @@ public class ApiHandler {
             Log.d(TAG, "jsonParseToMovie: Parsing error");
         }
 
-        temp = listMovie;
-        for (Movie m :
-                temp) {
-            Log.d(TAG, "jsonParseToMovie: " + m.getTitle());
-        }
         return listMovie;
     }
 
